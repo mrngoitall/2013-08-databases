@@ -56,7 +56,7 @@
 <datatype>MEDIUMINT</datatype>
 <default>NULL</default></row>
 <row name="room_name" null="1" autoincrement="0">
-<datatype>TINYINT</datatype>
+<datatype>VARCHAR</datatype>
 <default>NULL</default></row>
 <row name="room_create_date" null="1" autoincrement="0">
 <datatype>TIMESTAMP</datatype>
