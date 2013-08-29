@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- SQL XML created by WWW SQL Designer, http://code.google.com/p/wwwsqldesigner/ -->
+<!-- Active URL: http://ondras.zarovi.cz/sql/demo/ -->
+<sql>
+<datatypes db="mysql">
+  <group label="Numeric" color="rgb(238,238,170)">
+    <type label="TINYINT" length="0" sql="TINYINT" quote=""/>
+    <type label="SMALLINT" length="0" sql="SMALLINT" quote=""/>
+    <type label="MEDIUMINT" length="0" sql="MEDIUMINT" quote=""/>
+    <type label="INT" length="0" sql="INT" quote=""/>
+    <type label="Integer" length="0" sql="INTEGER" quote=""/>
+    <type label="BIGINT" length="0" sql="BIGINT" quote=""/>
+    <type label="Decimal" length="1" sql="DECIMAL" re="DEC" quote=""/>
+    <type label="Single precision" length="0" sql="FLOAT" quote=""/>
+    <type label="Double precision" length="0" sql="DOUBLE" re="DOUBLE" quote=""/>
+  </group>
+
+  <group label="Character" color="rgb(255,200,200)">
+    <type label="Char" length="1" sql="CHAR" quote="'"/>
+    <type label="Varchar" length="1" sql="VARCHAR" quote="'"/>
+    <type label="Text" length="0" sql="MEDIUMTEXT" re="TEXT" quote="'"/>
+    <type label="Binary" length="1" sql="BINARY" quote="'"/>
+    <type label="Varbinary" length="1" sql="VARBINARY" quote="'"/>
+    <type label="BLOB" length="0" sql="BLOB" re="BLOB" quote="'"/>
+  </group>
+
+  <group label="Date &amp; Time" color="rgb(200,255,200)">
+    <type label="Date" length="0" sql="DATE" quote="'"/>
+    <type label="Time" length="0" sql="TIME" quote="'"/>
+    <type label="Datetime" length="0" sql="DATETIME" quote="'"/>
+    <type label="Year" length="0" sql="YEAR" quote=""/>
+    <type label="Timestamp" length="0" sql="TIMESTAMP" quote="'"/>
+  </group>
+  
+  <group label="Miscellaneous" color="rgb(200,200,255)">
+    <type label="ENUM" length="1" sql="ENUM" quote=""/>
+    <type label="SET" length="1" sql="SET" quote=""/>
+    <type label="Bit" length="0" sql="bit" quote=""/>
+  </group>
+</datatypes><table x="116" y="418" name="patrons">
+<row name="patron_id" null="1" autoincrement="1">
+<datatype>MEDIUMINT</datatype>
+<default>NULL</default></row>
+<row name="patron_join_date" null="1" autoincrement="0">
+<datatype>DATETIME</datatype>
+<default>NULL</default></row>
+<row name="patron_first_name" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<row name="patron_last_name" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<row name="patron_address" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<row name="patron_city" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<row name="patron_state" null="1" autoincrement="0">
+<datatype>VARCHAR(2)</datatype>
+<default>NULL</default></row>
+<row name="patron_zip" null="1" autoincrement="0">
+<datatype>MEDIUMINT</datatype>
+<default>NULL</default></row>
+<row name="patron_cell_phone" null="1" autoincrement="0">
+<datatype>INT</datatype>
+<default>NULL</default></row>
+<row name="patron_home_phone" null="1" autoincrement="0">
+<datatype>INT</datatype>
+<default>NULL</default></row>
+<row name="patron_work_phone" null="1" autoincrement="0">
+<datatype>INT</datatype>
+<default>NULL</default></row>
+<row name="patron_deactivated_date" null="1" autoincrement="0">
+<datatype>TIMESTAMP</datatype>
+<default>NULL</default></row>
+<key type="PRIMARY" name="">
+<part>patron_id</part>
+</key>
+</table>
+<table x="58" y="25" name="book_catalog">
+<row name="book_id" null="1" autoincrement="1">
+<datatype>INT</datatype>
+<default>NULL</default></row>
+<row name="book_title" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<row name="book_author_first" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<row name="book_author_last" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<row name="book_publish_date" null="1" autoincrement="0">
+<datatype>TIMESTAMP</datatype>
+<default>NULL</default></row>
+<row name="book_isbn" null="1" autoincrement="0">
+<datatype>BIGINT</datatype>
+<default>NULL</default></row>
+<row name="book_lccn" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<key type="PRIMARY" name="">
+<part>book_id</part>
+</key>
+<comment>Table of all books in the library (informational)</comment>
+</table>
+<table x="506" y="59" name="book_circ_status">
+<row name="book_circ_status_id" null="1" autoincrement="1">
+<datatype>INT</datatype>
+<default>NULL</default></row>
+<row name="book_circ_id" null="1" autoincrement="0">
+<datatype>INT</datatype>
+<default>NULL</default><relation table="book_circ" row="book_circ_id" />
+</row>
+<row name="book_status" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default><relation table="book_status" row="book_status_id" />
+</row>
+<row name="patron_id" null="1" autoincrement="0">
+<datatype>INT</datatype>
+<default>NULL</default><relation table="patrons" row="patron_id" />
+</row>
+<row name="book_circ_loan_date" null="1" autoincrement="0">
+<datatype>DATETIME</datatype>
+<default>NULL</default></row>
+<row name="book_circ_due_date" null="1" autoincrement="0">
+<datatype>DATETIME</datatype>
+<default>NULL</default></row>
+<row name="book_circ_removed_date" null="1" autoincrement="0">
+<datatype>DATETIME</datatype>
+<default>NULL</default></row>
+<row name="book_circ_status_seq_no" null="1" autoincrement="0">
+<datatype>INT</datatype>
+<default>NULL</default></row>
+<key type="PRIMARY" name="">
+<part>book_circ_status_id</part>
+</key>
+<comment>Table of all books (including duplicate copies) in the library, including status of each copy.</comment>
+</table>
+<table x="828" y="48" name="book_status">
+<row name="book_status_id" null="1" autoincrement="1">
+<datatype>SMALLINT</datatype>
+<default>NULL</default></row>
+<row name="book_status" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<key type="PRIMARY" name="">
+<part>book_status_id</part>
+</key>
+</table>
+<table x="597" y="317" name="holds">
+<row name="hold_id" null="1" autoincrement="1">
+<datatype>INT</datatype>
+<default>NULL</default></row>
+<row name="patron_id" null="1" autoincrement="0">
+<datatype>TINYINT</datatype>
+<default>NULL</default><relation table="patrons" row="patron_id" />
+</row>
+<row name="hold_type_id" null="1" autoincrement="0">
+<datatype>TINYINT</datatype>
+<default>NULL</default><relation table="hold_types" row="hold_type_id" />
+</row>
+<row name="book_circ_status_id" null="1" autoincrement="0">
+<datatype>INT</datatype>
+<default>NULL</default><relation table="book_circ_status" row="book_circ_status_id" />
+</row>
+<row name="hold_fee" null="1" autoincrement="0">
+<datatype>DECIMAL</datatype>
+<default>NULL</default></row>
+<row name="hold_status" null="1" autoincrement="0">
+<datatype>TINYINT</datatype>
+<default>NULL</default></row>
+<row name="hold_established_date" null="1" autoincrement="0">
+<datatype>DATETIME</datatype>
+<default>NULL</default></row>
+<row name="hold_release_date" null="1" autoincrement="0">
+<datatype>DATETIME</datatype>
+<default>NULL</default></row>
+<key type="PRIMARY" name="">
+<part>hold_id</part>
+</key>
+<comment>Prevents patrons from checking out new material. </comment>
+</table>
+<table x="830" y="275" name="fees">
+<row name="fee_id" null="1" autoincrement="1">
+<datatype>TINYINT</datatype>
+<default>NULL</default></row>
+<row name="fee_type_id" null="1" autoincrement="0">
+<datatype>TINYINT</datatype>
+<default>NULL</default><relation table="fee_types" row="fee_type_id" />
+</row>
+<row name="patron_id" null="1" autoincrement="0">
+<datatype>INT</datatype>
+<default>NULL</default><relation table="patrons" row="patron_id" />
+</row>
+<row name="fee_amount" null="1" autoincrement="0">
+<datatype>DECIMAL</datatype>
+<default>NULL</default></row>
+<row name="fee_paid_amount" null="1" autoincrement="0">
+<datatype>DECIMAL</datatype>
+<default>NULL</default></row>
+<key type="PRIMARY" name="">
+<part>fee_id</part>
+</key>
+<comment>Fees associated with a particular patron (from material checkout fees, to late fees)</comment>
+</table>
+<table x="972" y="455" name="hold_types">
+<row name="hold_type_id" null="1" autoincrement="1">
+<datatype>TINYINT</datatype>
+<default>NULL</default></row>
+<row name="hold_type" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<row name="hold_fee" null="1" autoincrement="0">
+<datatype>SMALLINT</datatype>
+<default>NULL</default></row>
+<key type="PRIMARY" name="">
+<part>hold_type_id</part>
+</key>
+<comment>Late book, damaged book, miscellaneous bans, etc.</comment>
+</table>
+<table x="992" y="296" name="fee_types">
+<row name="fee_type_id" null="1" autoincrement="1">
+<datatype>TINYINT</datatype>
+<default>NULL</default></row>
+<row name="fee_type" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<key type="PRIMARY" name="">
+<part>fee_type_id</part>
+</key>
+</table>
+<table x="265" y="86" name="book_circ">
+<row name="book_circ_id" null="1" autoincrement="1">
+<datatype>INT</datatype>
+<default>NULL</default></row>
+<row name="book_id" null="1" autoincrement="0">
+<datatype>TINYINT</datatype>
+<default>NULL</default><relation table="book_catalog" row="book_id" />
+</row>
+<row name="book_circ_barcode" null="1" autoincrement="0">
+<datatype>INT</datatype>
+<default>NULL</default></row>
+<row name="book_circ_call_no" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<key type="PRIMARY" name="">
+<part>book_circ_id</part>
+</key>
+</table>
+<table x="770" y="615" name="keywords">
+<row name="keyword_id" null="1" autoincrement="1">
+<datatype>INT</datatype>
+<default>NULL</default></row>
+<row name="keyword" null="1" autoincrement="0">
+<datatype>VARCHAR</datatype>
+<default>NULL</default></row>
+<key type="PRIMARY" name="">
+<part>keyword_id</part>
+</key>
+</table>
+<table x="521" y="584" name="book_keywords">
+<row name="book_keywords_id" null="1" autoincrement="1">
+<datatype>INT</datatype>
+<default>NULL</default></row>
+<row name="book_id" null="1" autoincrement="0">
+<datatype>INT</datatype>
+<default>NULL</default><relation table="book_catalog" row="book_id" />
+</row>
+<row name="keyword_id" null="1" autoincrement="0">
+<datatype>INT</datatype>
+<default>NULL</default><relation table="keywords" row="keyword_id" />
+</row>
+<key type="PRIMARY" name="">
+<part>book_keywords_id</part>
+</key>
+</table>
+</sql>
