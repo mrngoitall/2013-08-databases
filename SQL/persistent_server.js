@@ -1,5 +1,5 @@
 var mysql = require('mysql');
-var requestHandler = require('./request-handler.js');
+var requestHandler = require('./request-handler');
 var http = require("http");
 /* If the node mysql module is not found on your system, you may
  * need to do an "sudo npm install -g mysql". */
@@ -22,7 +22,8 @@ dbConnection.connect();
 /* You already know how to create an http server from the previous
  * assignment; you can re-use most of that code here. */
 
-dbConnection.end();
 var server = http.createServer(requestHandler.handleRequest);
 console.log("Listening on port: " + port);
 server.listen(port);
+
+dbConnection.end();
