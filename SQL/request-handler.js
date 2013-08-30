@@ -3,7 +3,7 @@ var fs = require('fs');
 var mysql = require('mysql');
 var dbConnection = mysql.createConnection({
   user: "root",
-  password: "",
+  password: "fzPJlqy2fLs7srDER6LRx9eo8",
   database: "chat"
 });
 dbConnection.connect();
@@ -134,6 +134,8 @@ var sendMessageHandler = function(request, response, roomName) {
     dbConnection.query(insertMessageQuery, 
       [parsedMessage.username, roomName, parsedMessage.message], 
       function(err, results) {
+        console.log('posted err: ',err);
+        console.log('posted result: ',results);
         response.writeHead(statusCode, headers);
         response.end();
     });
