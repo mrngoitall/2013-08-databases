@@ -32,8 +32,8 @@ describe("Persistent Node Chat Server", function() {
     // Post a message to the node chat server:
     request({method: "POST",
              uri: "http://127.0.0.1:8081/classes/room1",
-             form: JSON.stringify({username: "Valjean",
-                    message: "In mercy's name, three days is all I need."})
+             json: {username: "Valjean",
+                    message: "In mercy's name, three days is all I need."}
             },
             function(error, response, body) {
               /* Now if we look in the database, we should find the
@@ -49,7 +49,7 @@ describe("Persistent Node Chat Server", function() {
               dbConnection.query( queryString, //queryArgs,
                 function(err, results, fields) {
                   // Should have one result:
-                  console.log(results);
+                  console.log('results: ',results);
                   expect(results.length).toEqual(1);
                   expect(results[0].username).toEqual("Valjean");
                   expect(results[0].message).toEqual("In mercy's name, three days is all I need.");

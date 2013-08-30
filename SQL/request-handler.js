@@ -107,7 +107,6 @@ var getMessagesHandler = function(request, response, roomName) {
     [roomName],
     function(err, results) {
       var messages = [];
-      console.log(arguments);
       for (var i = 0; i < results.length; i++) {
         messages.push(results[i]);
       }
@@ -132,7 +131,6 @@ var sendMessageHandler = function(request, response, roomName) {
     var insertMessageQuery = "insert into chatmessages "+
       "(username, room, message, created_date) "+
       "values (?, ?, ?, now());";
-    console.log(messageData);
     var parsedMessage = JSON.parse(messageData);
     dbConnection.query(insertMessageQuery, 
       [parsedMessage.username, roomName, parsedMessage.message], 
