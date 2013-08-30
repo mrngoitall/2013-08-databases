@@ -21,7 +21,32 @@ var headers = defaultCorsHeaders;
 headers['Content-Type'] = "text/plain";
 var statusCode;
 
+// Saving this for later, in case I have time to figure out how to make 
+// Sequelize work with multiple models. 
 
+// var User = sequelize.define('User', { name: Sequelize.STRING });
+// var Room = sequelize.define('Room', { name: Sequelize.STRING });
+// var Message = sequelize.define('Message', { message: Sequelize.STRING });
+
+// Message.hasOne(User);
+// Message.hasOne(Room);
+
+var Message = sequelize.define('Message', { 
+  user: Sequelize.STRING, 
+  room: Sequelize.STRING,
+  message: Sequelize.STRING });
+
+sequelize.sync();
+
+var message = Message.build({
+  user: 'Will',
+  room: 'messages',
+  message: "Damn sequelize. Why can't you be more flexible? :("
+});
+
+message.save().success(function() {
+  console.log('done!');
+});
 
 exports.handleRequest = function(request, response) {
   console.log("Serving request type " + request.method + " for url " + request.url);
@@ -85,37 +110,66 @@ exports.handleRequest = function(request, response) {
 
 var getMessagesHandler = function(request, response, roomName) {
   statusCode = 200;
-  getMessagesQuery = "select * from chatmessages " +
-    "where room = ? " +
-    "order by created_date desc " +
-    "limit 100;";
-  dbConnection.query(getMessagesQuery,
-    [roomName],
-    function(err, results) {
-      var messages = [];
-      for (var i = 0; i < results.length; i++) {
-        messages.push(results[i]);
+  Message.findAndCountAll({
+    where: {room: roomName},
+    order: 'createdAt desc',
+    limit: 100 }).success(function(messageResults) {
+      console.log(messageResults.rows);
+      for (var i = 0; i < messageResults.count; i++) {
+        messages.push(messageResults[i]);
       }
-      response.writeHead(statusCode, headers);
-      response.end(JSON.stringify(messages));
     });
+  response.writeHead(statusCode, headers);
+  response.end(JSON.stringify(messages));
+  )
+
+  // Room.find({ 
+  //   where: {name: roomName}}).success(function(room) {
+  //     var messages = [];
+  //     if (room) {
+  //     Message.findAndCountAll( { 
+  //       where: { roomid: room.id}, 
+  //       order: 'createdAt desc', 
+  //       limit: 100 }).success(function(messageResults) {
+  //         console.log(messageResults.rows);
+  //         for (var i = 0; i < messageResults.count; i++) {
+  //           messages.push(messageResults[i]);
+  //         }
+  //       });
+  //     }
+  //     response.writeHead(statusCode, headers);
+  //     response.end(JSON.stringify(messages));
+  //   })
+   
+  // getMessagesQuery = "select * from chatmessages " +
+  //   "where room = ? " +
+  //   "order by created_date desc " +
+  //   "limit 100;";
+  // dbConnection.query(getMessagesQuery,
+  //   [roomName],
+  //   function(err, results) {
+  //     var messages = [];
+  //     for (var i = 0; i < results.length; i++) {
+  //       messages.push(results[i]);
+  //     }
+  //     response.writeHead(statusCode, headers);
+  //     response.end(JSON.stringify(messages));
+  //   });
 };
 
 var getChatRoomsHandler = function(response) {
   statusCode = 200;
-  getRoomsQuery = "select distinct room from chatmessages " +
+  getRoomsQuery = "select distinct room from Messages " +
     "order by room asc " +
     "limit 100;";
-  dbConnection.query(getRoomsQuery, 
-    function(err, results) {
-      var rooms = [];
-      for (var i = 0; i < results.length; i++) {
-        rooms.push(results[i].room);
-      }
-      response.writeHead(statusCode, headers);
-      response.end(JSON.stringify(rooms));
-    })
-  
+  sequelize.query(getRoomsQuery).success(function(err, results) {
+    var rooms = [];
+    for (var i = 0; i < results.length; i++) {
+      rooms.push(results[i].room);
+    }
+    response.writeHead(statusCode, headers);
+    response.end(JSON.stringify(rooms));
+  });
 };
 
 var sendMessageHandler = function(request, response, roomName) {
