@@ -93,17 +93,18 @@ exports.handleRequest = function(request, response) {
 
 var getMessagesHandler = function(request, response, roomName) {
   statusCode = 200;
-  dbConnection.query("select * from chatmessages " +
+  getMessagesQuery = "select * from chatmessages " +
     "where room = ? " +
-    "order by created_date desc;",
+    "order by created_date desc;";
+  dbConnection.query(getMessagesQuery,
     [roomName],
     function(err, results) {
-      for (var i = 0; i < results.length; i++) {
-        messages.push(currentMessages[i]);
-      }
+      // for (var i = 0; i < results.length; i++) {
+      //   messages.push(currentMessages[i]);
+      // }      
+      response.writeHead(statusCode, headers);
+      response.end(JSON.stringify(results));
     });
-  response.writeHead(statusCode, headers);
-  response.end(JSON.stringify(messages));
 };
 
 var getChatRoomsHandler = function(response) {
@@ -120,14 +121,16 @@ var sendMessageHandler = function(request, response, roomName) {
   });
   request.on('end', function() {
     statusCode = 201;
-    var message = {};
+    var insertMessageQuery = "insert into chatmessages "+
+      "(username, room, message, created_date) "+
+      "values (?, ?, ?, now());";
     var parsedMessage = JSON.parse(messageData);
-    message.username = parsedMessage.username;
-    message.message = parsedMessage.message;
-    message.createdTime = Date();
-    rooms[roomName].push(message);
-    response.writeHead(statusCode, headers);
-    response.end();
+    dbConnection.query(insertMessageQuery, 
+      [parsedMessage.username, roomName, parsedMessage.message], 
+      function(err, results) {
+        response.writeHead(statusCode, headers);
+        response.end();
+    });
   });
 };
 
