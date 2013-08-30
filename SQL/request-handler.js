@@ -25,19 +25,6 @@ var headers = defaultCorsHeaders;
 headers['Content-Type'] = "text/plain";
 var statusCode;
 
-// if (fs.existsSync('messages.txt')) {
-//   rooms = JSON.parse(fs.readFileSync('messages.txt'));
-// } else {
-//   rooms = {};
-// }
-
-// setInterval(function () {
-//   console.log("Writing messages to disk...");
-//   fs.writeFileSync('messages.txt', JSON.stringify(rooms));
-//   console.log("Finished writing.");
-//   process.exit();
-// }, 60000);
-
 exports.handleRequest = function(request, response) {
   console.log("Serving request type " + request.method + " for url " + request.url);
   var parsedURL = url.parse(request.url).pathname.split("/");
