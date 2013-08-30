@@ -1,5 +1,12 @@
 var url = require('url');
 var fs = require('fs');
+var mysql = require('mysql');
+var dbConnection = mysql.createConnection({
+  user: "root",
+  password: "",
+  database: "chat"
+});
+dbConnection.connect();
 
 /* You should implement your request handler function in this file.
  * But you need to pass the function to http.createServer() in
@@ -99,11 +106,13 @@ var getMessagesHandler = function(request, response, roomName) {
   dbConnection.query(getMessagesQuery,
     [roomName],
     function(err, results) {
-      // for (var i = 0; i < results.length; i++) {
-      //   messages.push(currentMessages[i]);
-      // }      
+      var messages = [];
+      console.log(arguments);
+      for (var i = 0; i < results.length; i++) {
+        messages.push(results[i]);
+      }
       response.writeHead(statusCode, headers);
-      response.end(JSON.stringify(results));
+      response.end(JSON.stringify(messages));
     });
 };
 
@@ -115,7 +124,6 @@ var getChatRoomsHandler = function(response) {
 
 var sendMessageHandler = function(request, response, roomName) {
   var messageData = '';
-  rooms[roomName] = rooms[roomName] || [];
   request.on('data', function(chunk) {
     messageData += chunk;
   });
@@ -124,6 +132,7 @@ var sendMessageHandler = function(request, response, roomName) {
     var insertMessageQuery = "insert into chatmessages "+
       "(username, room, message, created_date) "+
       "values (?, ?, ?, now());";
+    console.log(messageData);
     var parsedMessage = JSON.parse(messageData);
     dbConnection.query(insertMessageQuery, 
       [parsedMessage.username, roomName, parsedMessage.message], 
@@ -139,3 +148,4 @@ var notFoundHandler = function(request, response) {
   response.writeHead(statusCode, headers);
   response.end("404 not found!");
 };
+

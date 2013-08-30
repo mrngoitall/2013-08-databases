@@ -17,7 +17,7 @@ describe("Persistent Node Chat Server", function() {
     });
     dbConnection.connect();
 
-    var tablename = "messages"; // TODO: fill this out
+    var tablename = "chatmessages"; // TODO: fill this out
 
     /* Empty the db table before each test so that multiple tests
      * (or repeated runs of the tests) won't screw each other up: */
@@ -31,15 +31,16 @@ describe("Persistent Node Chat Server", function() {
   it("Should insert posted messages to the DB", function(done) {
     // Post a message to the node chat server:
     request({method: "POST",
-             uri: "http://127.0.0.1:8080/classes/room1",
-             form: {username: "Valjean",
-                    message: "In mercy's name, three days is all I need."}
+             uri: "http://127.0.0.1:8081/classes/room1",
+             form: JSON.stringify({username: "Valjean",
+                    message: "In mercy's name, three days is all I need."})
             },
             function(error, response, body) {
               /* Now if we look in the database, we should find the
                * posted message there. */
 
-              var queryString = "select * from chatmessages";
+              var queryString = "select * from chatmessages "+
+                "order by created_date desc";
               var queryArgs = [];
               /* TODO: Change the above queryString & queryArgs to match your schema design
                * The exact query string and query args to use
@@ -64,7 +65,8 @@ describe("Persistent Node Chat Server", function() {
   it("Should output all messages from the DB", function(done) {
     // Let's insert a message into the db
 
-    var queryString = "insert into chatmessages (username, room, message, created_date)"+
+    var queryString =  "insert into chatmessages "+
+      "(username, room, message, created_date) "+
       "values (?, 'room1', ?, now());";
 
     var queryArgs = ["Javert", "Men like you can never change!"];
@@ -76,7 +78,7 @@ describe("Persistent Node Chat Server", function() {
       function(err, results, fields) {
         /* Now query the Node chat server and see if it returns
          * the message we just inserted: */
-        request("http://127.0.0.1:8080/classes/room1",
+        request("http://127.0.0.1:8081/classes/room1",
           function(error, response, body) {
             var messageLog = JSON.parse(body);
             expect(messageLog[0].username).toEqual("Javert");
