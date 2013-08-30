@@ -117,8 +117,18 @@ var getMessagesHandler = function(request, response, roomName) {
 
 var getChatRoomsHandler = function(response) {
   statusCode = 200;
-  response.writeHead(statusCode, headers);
-  response.end(JSON.stringify(Object.keys(rooms)));
+  getRoomsQuery = "select distinct room from chatmessages " +
+    "order by room asc";
+  dbConnection.query(getRoomsQuery, 
+    function(err, results) {
+      var rooms = [];
+      for (var i = 0; i < results.length; i++) {
+        rooms.push(results[i].room);
+      }
+      response.writeHead(statusCode, headers);
+      response.end(JSON.stringify(rooms));
+    })
+  
 };
 
 var sendMessageHandler = function(request, response, roomName) {
