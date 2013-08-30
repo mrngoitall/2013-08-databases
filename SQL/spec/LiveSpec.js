@@ -14,23 +14,16 @@ dbConnection = mysql.createConnection({
   database: "chat"
 });
 
-// allows us to run tests async
-function async(cb){
-  waits(200);
-  runs(cb);
-}
+
 
 describe("Persistent Node Chat Server", function() {
 
   beforeEach(function() {
-    dbConnection.connect();
-
     var tablename = "chatmessages"; // TODO: fill this out
 
     /* Empty the db table before each test so that multiple tests
      * (or repeated runs of the tests) won't screw each other up: */
-
-    dbConnection.query("DELETE FROM " + tablename);
+    
   });
 
   afterEach(function() {
@@ -38,6 +31,8 @@ describe("Persistent Node Chat Server", function() {
   });
 
   it("Should insert posted messages to the DB", function(done) {
+    dbConnection.connect();
+    dbConnection.query("DELETE FROM chatmessages");
     // Post a message to the node chat server:
     request({method: "POST",
        uri: "http://127.0.0.1:8081/classes/room1",
@@ -54,27 +49,28 @@ describe("Persistent Node Chat Server", function() {
          * The exact query string and query args to use
          * here depend on the schema you design, so I'll leave
          * them up to you. */
-        dbConnection.query( queryString, //queryArgs,
+        dbConnection.query(queryString, //queryArgs,
           function(err, results, fields) {
             // Should have one result:
+            console.log('checking results');
             expect(results.length).toEqual(1);
             expect(results[0].username).toEqual("Valjean");
             expect(results[0].message).toEqual("In mercy's name, three days is all I need.");
             /* TODO: You will need to change these tests if the
              * column names in your schema are different from
              * mine! */
-            
+            console.log('request ended');
+            dbConnection.end();
+            done();
           });
       });
-    async(function(){
-      dbConnection.end();
-      done();
-    });
   });
 
-  it("Should output all messages from the DB", function(done) {
+  xit("Should output all messages from the DB", function(done) {
     // Let's insert a message into the db
-
+    console.log('running next test');
+    dbConnection.connect();
+    dbConnection.query("DELETE FROM chatmessages");
     var queryString =  "insert into chatmessages "+
       "(username, room, message, created_date) "+
       "values (?, 'room1', ?, now());";
@@ -93,6 +89,7 @@ describe("Persistent Node Chat Server", function() {
             var messageLog = JSON.parse(body);
             expect(messageLog[0].username).toEqual("Javert");
             expect(messageLog[0].message).toEqual("Men like you can never change!");
+            dbConnection.end();
             done();
           });
       });
