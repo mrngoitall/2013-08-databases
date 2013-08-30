@@ -102,7 +102,8 @@ var getMessagesHandler = function(request, response, roomName) {
   statusCode = 200;
   getMessagesQuery = "select * from chatmessages " +
     "where room = ? " +
-    "order by created_date desc;";
+    "order by created_date desc " +
+    "limit 100;";
   dbConnection.query(getMessagesQuery,
     [roomName],
     function(err, results) {
@@ -118,7 +119,8 @@ var getMessagesHandler = function(request, response, roomName) {
 var getChatRoomsHandler = function(response) {
   statusCode = 200;
   getRoomsQuery = "select distinct room from chatmessages " +
-    "order by room asc";
+    "order by room asc " +
+    "limit 100;";
   dbConnection.query(getRoomsQuery, 
     function(err, results) {
       var rooms = [];
