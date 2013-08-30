@@ -18,18 +18,18 @@ var headers = defaultCorsHeaders;
 headers['Content-Type'] = "text/plain";
 var statusCode;
 
-if (fs.existsSync('messages.txt')) {
-  rooms = JSON.parse(fs.readFileSync('messages.txt'));
-} else {
-  rooms = {};
-}
+// if (fs.existsSync('messages.txt')) {
+//   rooms = JSON.parse(fs.readFileSync('messages.txt'));
+// } else {
+//   rooms = {};
+// }
 
-setInterval(function () {
-  console.log("Writing messages to disk...");
-  fs.writeFileSync('messages.txt', JSON.stringify(rooms));
-  console.log("Finished writing.");
-  process.exit();
-}, 60000);
+// setInterval(function () {
+//   console.log("Writing messages to disk...");
+//   fs.writeFileSync('messages.txt', JSON.stringify(rooms));
+//   console.log("Finished writing.");
+//   process.exit();
+// }, 60000);
 
 exports.handleRequest = function(request, response) {
   console.log("Serving request type " + request.method + " for url " + request.url);
@@ -93,11 +93,15 @@ exports.handleRequest = function(request, response) {
 
 var getMessagesHandler = function(request, response, roomName) {
   statusCode = 200;
-  var messages = [];
-  var currentMessages = rooms[roomName] || [];
-  for (var i = currentMessages.length-1; i >= 0; i--) {
-    messages.push(currentMessages[i]);
-  }
+  dbConnection.query("select * from chatmessages " +
+    "where room = ? " +
+    "order by created_date desc;",
+    [roomName],
+    function(err, results) {
+      for (var i = 0; i < results.length; i++) {
+        messages.push(currentMessages[i]);
+      }
+    });
   response.writeHead(statusCode, headers);
   response.end(JSON.stringify(messages));
 };
