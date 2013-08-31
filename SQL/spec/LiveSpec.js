@@ -7,6 +7,9 @@ var request = require("request"); // You might need to npm install the request m
 describe("Persistent Node Chat Server", function() {
   var dbConnection;
 
+  //var tablename = "chatmessages"; // SQL
+  var tablename = "MessagesFromORM"; // ORM
+
   beforeEach(function(done) {
     dbConnection = mysql.createConnection({
     /* TODO: Fill this out with your mysql username */
@@ -17,13 +20,12 @@ describe("Persistent Node Chat Server", function() {
     });
     dbConnection.connect();
 
-    var tablename = "chatmessages"; // TODO: fill this out
-
     /* Empty the db table before each test so that multiple tests
      * (or repeated runs of the tests) won't screw each other up: */
-    dbConnection.query("DELETE FROM " + tablename, function () { 
-      done();
-    });
+    // dbConnection.query("DELETE FROM " + tablename, function () { 
+    //   done();
+    // });
+    done();
   });
 
   afterEach(function() {
@@ -41,8 +43,9 @@ describe("Persistent Node Chat Server", function() {
               /* Now if we look in the database, we should find the
                * posted message there. */
 
-              var queryString = "select * from chatmessages "+
-                "order by created_date desc";
+              var queryString = "select * from "+tablename+" "+
+                //"order by created_date desc"; //SQL
+                "order by createdAt desc"; //ORM
               var queryArgs = [];
               /* TODO: Change the above queryString & queryArgs to match your schema design
                * The exact query string and query args to use
@@ -65,8 +68,9 @@ describe("Persistent Node Chat Server", function() {
   it("Should output all messages from the DB", function(done) {
     // Let's insert a message into the db
 
-    var queryString =  "insert into chatmessages "+
-      "(username, room, message, created_date) "+
+    var queryString =  "insert into "+tablename+" "+
+      //"(username, room, message, created_date) "+ //SQL
+      "(username, room, message, created_date) "+ //ORM
       "values (?, 'room1', ?, now());";
 
     var queryArgs = ["Javert", "Men like you can never change!"];

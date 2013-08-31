@@ -2,7 +2,7 @@ var url = require('url');
 var fs = require('fs');
 var mysql = require('mysql');
 var Sequelize = require('sequelize');
-var sequelize = new Sequelize("orm_chat", "root", "fzPJlqy2fLs7srDER6LRx9eo8");
+var sequelize = new Sequelize("chat", "root", "fzPJlqy2fLs7srDER6LRx9eo8");
 
 /* You should implement your request handler function in this file.
  * But you need to pass the function to http.createServer() in
