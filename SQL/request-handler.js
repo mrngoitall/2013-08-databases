@@ -116,7 +116,7 @@ var getChatRoomsHandler = function(response) {
       }
       response.writeHead(statusCode, headers);
       response.end(JSON.stringify(rooms));
-    })
+    });
   
 };
 
@@ -134,8 +134,6 @@ var sendMessageHandler = function(request, response, roomName) {
     dbConnection.query(insertMessageQuery, 
       [parsedMessage.username, roomName, parsedMessage.message], 
       function(err, results) {
-        console.log('posted err: ',err);
-        console.log('posted result: ',results);
         response.writeHead(statusCode, headers);
         response.end();
     });

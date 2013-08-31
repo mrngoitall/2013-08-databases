@@ -4,73 +4,67 @@
 var mysql = require('mysql');
 var request = require("request"); // You might need to npm install the request module!
 
-var dbConnection;
-
-dbConnection = mysql.createConnection({
-/* TODO: Fill this out with your mysql username */
-  user: "root",
-/* and password. */
-  password: "fzPJlqy2fLs7srDER6LRx9eo8",
-  database: "chat"
-});
-
-
-
 describe("Persistent Node Chat Server", function() {
+  var dbConnection;
 
-  beforeEach(function() {
+  beforeEach(function(done) {
+    dbConnection = mysql.createConnection({
+    /* TODO: Fill this out with your mysql username */
+      user: "root",
+    /* and password. */
+      password: "fzPJlqy2fLs7srDER6LRx9eo8",
+      database: "chat"
+    });
+    dbConnection.connect();
+
     var tablename = "chatmessages"; // TODO: fill this out
 
     /* Empty the db table before each test so that multiple tests
      * (or repeated runs of the tests) won't screw each other up: */
-    
+    dbConnection.query("DELETE FROM " + tablename, function () { 
+      done();
+    });
   });
 
   afterEach(function() {
-    //dbConnection.end();
+    dbConnection.end();
   });
 
   it("Should insert posted messages to the DB", function(done) {
-    dbConnection.connect();
-    dbConnection.query("DELETE FROM chatmessages");
     // Post a message to the node chat server:
     request({method: "POST",
-       uri: "http://127.0.0.1:8081/classes/room1",
-       json: {username: "Valjean",
-              message: "In mercy's name, three days is all I need."}
-      },
-      function(error, response, body) {
-        /* Now if we look in the database, we should find the
-         * posted message there. */
-        var queryString = "select * from chatmessages "+
-          "order by created_date desc";
-        var queryArgs = [];
-        /* TODO: Change the above queryString & queryArgs to match your schema design
-         * The exact query string and query args to use
-         * here depend on the schema you design, so I'll leave
-         * them up to you. */
-        dbConnection.query(queryString, //queryArgs,
-          function(err, results, fields) {
-            // Should have one result:
-            console.log('checking results');
-            expect(results.length).toEqual(1);
-            expect(results[0].username).toEqual("Valjean");
-            expect(results[0].message).toEqual("In mercy's name, three days is all I need.");
-            /* TODO: You will need to change these tests if the
-             * column names in your schema are different from
-             * mine! */
-            console.log('request ended');
-            dbConnection.end();
-            done();
-          });
-      });
+             uri: "http://127.0.0.1:8081/classes/room1",
+             json: {username: "Valjean",
+                    message: "In mercy's name, three days is all I need."}
+            },
+            function(error, response, body) {
+              /* Now if we look in the database, we should find the
+               * posted message there. */
+
+              var queryString = "select * from chatmessages "+
+                "order by created_date desc";
+              var queryArgs = [];
+              /* TODO: Change the above queryString & queryArgs to match your schema design
+               * The exact query string and query args to use
+               * here depend on the schema you design, so I'll leave
+               * them up to you. */
+              dbConnection.query( queryString, //queryArgs,
+                function(err, results, fields) {
+                  // Should have one result:
+                  expect(results.length).toEqual(1);
+                  expect(results[0].username).toEqual("Valjean");
+                  expect(results[0].message).toEqual("In mercy's name, three days is all I need.");
+                  /* TODO: You will need to change these tests if the
+                   * column names in your schema are different from
+                   * mine! */
+                  done();
+                });
+            });
   });
 
-  xit("Should output all messages from the DB", function(done) {
+  it("Should output all messages from the DB", function(done) {
     // Let's insert a message into the db
-    console.log('running next test');
-    dbConnection.connect();
-    dbConnection.query("DELETE FROM chatmessages");
+
     var queryString =  "insert into chatmessages "+
       "(username, room, message, created_date) "+
       "values (?, 'room1', ?, now());";
@@ -80,7 +74,7 @@ describe("Persistent Node Chat Server", function() {
      * here depend on the schema you design, so I'll leave
      * them up to you. */
 
-    dbConnection.query(queryString, queryArgs,
+    dbConnection.query( queryString, queryArgs,
       function(err, results, fields) {
         /* Now query the Node chat server and see if it returns
          * the message we just inserted: */
@@ -89,10 +83,8 @@ describe("Persistent Node Chat Server", function() {
             var messageLog = JSON.parse(body);
             expect(messageLog[0].username).toEqual("Javert");
             expect(messageLog[0].message).toEqual("Men like you can never change!");
-            dbConnection.end();
             done();
           });
       });
   });
-
 });
