@@ -108,7 +108,7 @@ var getMessagesHandler = function(request, response, roomName) {
       for (var i = 0; i < messageResults.count; i++) {
         messages.push(messageResults.rows[i].dataValues);
       }
-      // console.log('Messages sent to client: ', messages);
+      //console.log('Messages sent to client: ', messages);
       response.writeHead(statusCode, headers);
       response.end(JSON.stringify(messages));
     });
@@ -144,7 +144,6 @@ var sendMessageHandler = function(request, response, roomName) {
       message: parsedMessage.message
     });
     message.save().success(function() {
-      console.log('Saved message from '+parsedMessage.username);
       response.writeHead(statusCode, headers);
       response.end();
     });

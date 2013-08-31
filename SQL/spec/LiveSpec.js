@@ -8,7 +8,7 @@ describe("Persistent Node Chat Server", function() {
   var dbConnection;
 
   //var tablename = "chatmessages"; // SQL
-  var tablename = "MessagesFromORM"; // ORM
+  var tablename = "Messages"; // ORM
 
   beforeEach(function(done) {
     dbConnection = mysql.createConnection({
@@ -22,10 +22,9 @@ describe("Persistent Node Chat Server", function() {
 
     /* Empty the db table before each test so that multiple tests
      * (or repeated runs of the tests) won't screw each other up: */
-    // dbConnection.query("DELETE FROM " + tablename, function () { 
-    //   done();
-    // });
-    done();
+    dbConnection.query("DELETE FROM " + tablename, function () { 
+      done();
+    });
   });
 
   afterEach(function() {
@@ -70,14 +69,14 @@ describe("Persistent Node Chat Server", function() {
 
     var queryString =  "insert into "+tablename+" "+
       //"(username, room, message, created_date) "+ //SQL
-      "(username, room, message, created_date) "+ //ORM
-      "values (?, 'room1', ?, now());";
+      //"values (?, 'room1', ?, now());"; //SQL
+      "(username, room, message, createdAt, updatedAt) "+ //ORM
+      "values (?, 'room1', ?, now(), now());"; //ORM
 
     var queryArgs = ["Javert", "Men like you can never change!"];
     /* TODO - The exact query string and query args to use
      * here depend on the schema you design, so I'll leave
      * them up to you. */
-
     dbConnection.query( queryString, queryArgs,
       function(err, results, fields) {
         /* Now query the Node chat server and see if it returns
